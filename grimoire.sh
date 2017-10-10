@@ -65,7 +65,29 @@ Please select one of the above (1-4): \c'
        ;;
     2) echo "Enter name to be added: \c"
        read name
-       #### TODO: add name, also add other stats, maybe put in function
+       echo "Enter challenge level of creature: \c"
+       read level
+       echo "Enter hitpoints or hit dice: \c"
+       read hitpoints
+       echo "Enter strength (STR) score: \c"
+       read strength
+       echo "Enter dexterity (DEX) score: \c"
+       read dexterity
+       echo "Enter constitution (CON) score: \c"
+       read constitution
+       echo "Enter intelligence (INT) score: \c"
+       read intelligence
+       echo "Enter wisdom (WIS) score: \c"
+       read wisdom
+       echo "Enter charisma (CHA) score: \c"
+       read charisma
+
+       echo
+       echo "Writing creature to $GRIMOIRE..."
+       creature="$name|$level|$hitpoints|$strength|$dexterity|$constitution|$intelligence|$wisdom|$charisma" 
+       echo $creature >> $GRIMOIRE
+       echo "Successfully added: $creature"
+       echo
        validchoice=TRUE
        ;;
     3) echo "Enter name to be removed: \c"
