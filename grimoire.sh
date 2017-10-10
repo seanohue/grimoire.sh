@@ -24,6 +24,45 @@ echo
 # If passed arguments, do a look-up by name
 #
 
+function lu() {
+  search="$1"
+  echo "Searching for $search in $GRIMOIRE ..."
+  found="$(grep $search $GRIMOIRE)"
+
+  if [ -z $found ] ; then
+    echo "$found not found."
+    exit 1
+  fi
+
+  name="$(echo $found         | cut -d'|' -f1)"
+  level="$(echo $found        | cut -d'|' -f2)"
+  hitpoints="$(echo $found    | cut -d'|' -f3)"
+  strength="$(echo $found     | cut -d'|' -f4)"
+  dexterity="$(echo $found    | cut -d'|' -f5)"
+  constitution="$(echo $found | cut -d'|' -f6)"
+  intelligence="$(echo $found | cut -d'|' -f7)"
+  wisdom="$(echo $found       | cut -d'|' -f8)"
+  charisma="$(echo $found     | cut -d'|' -f9)"
+
+  echo
+  echo "============================="
+  echo ">> CREATURE FOUND <<"
+  echo ">> Name: $name"
+  echo ">> Level: $level"
+  echo ">> Hitpoints: $hitpoints"
+  echo "============================="
+  echo ">> ABILITY SCORES <<"
+  echo ">> STR: $strength"
+  echo ">> DEX: $dexterity"
+  echo ">> CON: $constitution"
+  echo ">> INT: $intelligence"
+  echo ">> WIS: $wisdom"
+  echo ">> CHA: $charisma"
+  echo "============================="
+  echo
+  exit 0
+}
+
 ##### TODO #####
 
 #
@@ -60,7 +99,7 @@ Please select one of the above (1-4): \c'
   in
     1) echo "Enter name to look up: \c"
        read name
-       #### TODO: lu name
+       lu $name
        validchoice=TRUE
        ;;
     2) echo "Enter name to be added: \c"
