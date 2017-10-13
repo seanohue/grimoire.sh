@@ -26,13 +26,27 @@ echo
 
 function lu() {
   search="$1"
-  echo "Searching for $search in $GRIMOIRE ..."
+
+  if [ -z "$search" ] ; then
+    echo "Please enter a creature's name to search for."
+    return 1
+  fi
+
+  echo "Searching for $search in $GRIMOIRE..."
   found="$(grep $search $GRIMOIRE)"
 
   if [ -z $found ] ; then
-    echo "$found not found."
-    exit 1
+    echo "\""$search"\" not found."
+    return 1
   fi
+
+  display_stats "$found"
+
+  return 0
+}
+
+function display_stats() {
+  found="$1"
 
   name="$(echo $found         | cut -d'|' -f1)"
   level="$(echo $found        | cut -d'|' -f2)"
@@ -60,7 +74,6 @@ function lu() {
   echo ">> CHA: $charisma"
   echo "============================="
   echo
-  exit 0
 }
 
 ##### TODO #####
@@ -85,8 +98,9 @@ until [ -n "$validchoice" ] ; do
   2. Add a monster to the Grimoire
   3. Remove a monster from the Grimoire
   4. Learn more about the Grimoire
+  5. Close the Grimoire
 
-Please select one of the above (1-4): \c'
+Please select one of the above (1-5): \c'
 
   #
   #  Read & interpret selection
@@ -99,8 +113,9 @@ Please select one of the above (1-4): \c'
   in
     1) echo "Enter name to look up: \c"
        read name
-       lu $name
-       validchoice=TRUE
+       if lu "$name" ; then
+         validchoice=TRUE
+       fi
        ;;
     2) echo "Enter name to be added: \c"
        read name
@@ -131,7 +146,7 @@ Please select one of the above (1-4): \c'
        ;;
     3) echo "Enter name to be removed: \c"
        read name
-       #### TODO: rem name
+       #### TODO: rem "$name"
        validchoice=TRUE
        ;;
     4) echo
@@ -142,6 +157,9 @@ Please select one of the above (1-4): \c'
        echo "  The data is stored in the format: "
        echo '  name|level|hit points|STR|DEX|CON|INT|WIS|CHA'
        echo
+       ;;
+    5) echo "Goodbye... for now."
+       validchoice=TRUE # then just exit
        ;;
     *) echo "Invalid choice.";;
   esac
