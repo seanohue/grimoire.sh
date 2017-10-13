@@ -18,10 +18,8 @@ if [ ! -f "$GRIMOIRE" ] ; then
   exit 1
 fi
 
-echo
-
 #
-# If passed arguments, do a look-up by name
+# Helper function to perform lookups of a record.
 #
 
 function lu() {
@@ -44,6 +42,10 @@ function lu() {
 
   return 0
 }
+
+#
+# Helper to display creature stats in a nice format.
+#
 
 function display_stats() {
   found="$1"
@@ -76,6 +78,20 @@ function display_stats() {
   echo
 }
 
+#
+# If passed arguments, do a look-up by name
+#
+
+if [ "$#" -ne 0 ] ; then
+  if lu "$@" ; then
+    exit 0
+  else
+    exit 1
+  fi
+fi
+
+echo
+
 ##### TODO #####
 
 #
@@ -97,10 +113,11 @@ until [ -n "$validchoice" ] ; do
   1. Look up a monster
   2. Add a monster to the Grimoire
   3. Remove a monster from the Grimoire
-  4. Learn more about the Grimoire
-  5. Close the Grimoire
+  4. Edit an existing record in the Grimoire
+  5. Learn more about the Grimoire
+  6. Close the Grimoire
 
-Please select one of the above (1-5): \c'
+Please select one of the above (1-6): \c'
 
   #
   #  Read & interpret selection
@@ -149,7 +166,11 @@ Please select one of the above (1-5): \c'
        #### TODO: rem "$name"
        validchoice=TRUE
        ;;
-    4) echo
+    4) echo "NO"
+       #### TODO: edit "$name" and so on
+       validchoice=TRUE
+       ;;
+    5) echo
        echo "  ABOUT GRIMOIRE:"
        echo "  This program is used to catalog creatures for"
        echo "  use in role-playing games, similar to a D&D monster manual."
@@ -158,7 +179,7 @@ Please select one of the above (1-5): \c'
        echo '  name|level|hit points|STR|DEX|CON|INT|WIS|CHA'
        echo
        ;;
-    5) echo "Goodbye... for now."
+    6) echo "Goodbye... for now."
        validchoice=TRUE # then just exit
        ;;
     *) echo "Invalid choice.";;
