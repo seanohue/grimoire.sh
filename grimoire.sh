@@ -173,10 +173,8 @@ Please select one of the above (1-6): \c'
          validchoice=TRUE
        fi
        ;;
-    2) if add_creature ; then
-         validchoice=TRUE
-       fi
-       ;;
+    2) add_creature
+       ;; # We want to return them to the menu once done.
     3) echo "Enter name to be removed: \c"
        read name
        #### TODO: rem "$name"
