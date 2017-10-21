@@ -19,6 +19,45 @@ if [ ! -f "$GRIMOIRE" ] ; then
 fi
 
 #
+# Helper function to add a record
+#
+function add_creature() {
+  echo "Enter name to be added: \c"
+  read name
+  echo "Enter challenge level of creature: \c"
+  read level
+  echo "Enter hitpoints or hit dice: \c"
+  read hitpoints
+  echo "Enter strength (STR) score: \c"
+  read strength
+  echo "Enter dexterity (DEX) score: \c"
+  read dexterity
+  echo "Enter constitution (CON) score: \c"
+  read constitution
+  echo "Enter intelligence (INT) score: \c"
+  read intelligence
+  echo "Enter wisdom (WIS) score: \c"
+  read wisdom
+  echo "Enter charisma (CHA) score: \c"
+  read charisma
+
+  echo
+  echo "Writing creature to $GRIMOIRE..."
+  creature="$name|$level|$hitpoints|$strength|$dexterity|$constitution|$intelligence|$wisdom|$charisma" 
+  echo $creature >> $GRIMOIRE
+  echo "Successfully added: $creature"
+  echo
+  echo "Add another creature? (y/n) \c"
+  read again
+  case $again
+  in
+    y)  add_creature ;;
+    Y)  add_creature ;;
+    *)  return 0
+  esac
+}
+
+#
 # Helper function to perform lookups of a record.
 #
 
@@ -62,7 +101,6 @@ function display_stats() {
 
   echo
   echo "============================="
-  echo ">> CREATURE FOUND <<"
   echo ">> Name: $name"
   echo ">> Level: $level"
   echo ">> Hitpoints: $hitpoints"
@@ -114,8 +152,9 @@ until [ -n "$validchoice" ] ; do
   2. Add a monster to the Grimoire
   3. Remove a monster from the Grimoire
   4. Edit an existing record in the Grimoire
-  5. Learn more about the Grimoire
-  6. Close the Grimoire
+  5. Display all records in the Grimoire
+  6. Learn more about the Grimoire
+  7. Close the Grimoire
 
 Please select one of the above (1-6): \c'
 
@@ -134,32 +173,9 @@ Please select one of the above (1-6): \c'
          validchoice=TRUE
        fi
        ;;
-    2) echo "Enter name to be added: \c"
-       read name
-       echo "Enter challenge level of creature: \c"
-       read level
-       echo "Enter hitpoints or hit dice: \c"
-       read hitpoints
-       echo "Enter strength (STR) score: \c"
-       read strength
-       echo "Enter dexterity (DEX) score: \c"
-       read dexterity
-       echo "Enter constitution (CON) score: \c"
-       read constitution
-       echo "Enter intelligence (INT) score: \c"
-       read intelligence
-       echo "Enter wisdom (WIS) score: \c"
-       read wisdom
-       echo "Enter charisma (CHA) score: \c"
-       read charisma
-
-       echo
-       echo "Writing creature to $GRIMOIRE..."
-       creature="$name|$level|$hitpoints|$strength|$dexterity|$constitution|$intelligence|$wisdom|$charisma" 
-       echo $creature >> $GRIMOIRE
-       echo "Successfully added: $creature"
-       echo
-       validchoice=TRUE
+    2) if add_creature ; then
+         validchoice=TRUE
+       fi
        ;;
     3) echo "Enter name to be removed: \c"
        read name
@@ -170,7 +186,13 @@ Please select one of the above (1-6): \c'
        #### TODO: edit "$name" and so on
        validchoice=TRUE
        ;;
-    5) echo
+    5) ## DISP ALL
+       while read creature ; do
+        display_stats $creature
+       done < $GRIMOIRE
+       validchoice=TRUE
+       ;;
+    6) echo
        echo "  ABOUT GRIMOIRE:"
        echo "  This program is used to catalog creatures for"
        echo "  use in role-playing games, similar to a D&D monster manual."
@@ -179,7 +201,7 @@ Please select one of the above (1-6): \c'
        echo '  name|level|hit points|STR|DEX|CON|INT|WIS|CHA'
        echo
        ;;
-    6) echo "Goodbye... for now."
+    7) echo "Goodbye... for now."
        validchoice=TRUE # then just exit
        ;;
     *) echo "Invalid choice.";;
