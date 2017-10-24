@@ -130,18 +130,10 @@ fi
 
 echo
 
-##### TODO #####
-
-#
-# If no arguments passed, run interactive mode.
-#
-
-validchoice=
-
-until [ -n "$validchoice" ] ; do
   #
   # Main Menu
   #
+function display_menu() {
   echo '
   =======================================
   >> GRIMOIRE    -    INTERACTIVE MODE <<
@@ -156,7 +148,16 @@ until [ -n "$validchoice" ] ; do
   6. Learn more about the Grimoire
   7. Close the Grimoire
 
-Please select one of the above (1-6): \c'
+Please select one of the above (1-7): \c'
+}
+
+validchoice=
+
+function run_menu() {
+  # Show main menu if CTRL-C pressed during interactive mode.
+  trap "display_menu" SIGINT
+
+  display_menu
 
   #
   #  Read & interpret selection
@@ -204,6 +205,15 @@ Please select one of the above (1-6): \c'
        ;;
     *) echo "Invalid choice.";;
   esac
+}
+
+
+#
+# If no arguments passed, run interactive mode.
+#
+
+until [ -n "$validchoice" ] ; do
+  run_menu
 done
 
 
